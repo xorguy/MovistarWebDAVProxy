@@ -1,5 +1,8 @@
 # Etapa 1: Compilador Go
-FROM golang:1.26-alpine AS builder
+FROM --platform=$BUILDPLATFORM golang:1.26-alpine AS builder
+
+ARG TARGETOS=linux
+ARG TARGETARCH
 
 WORKDIR /src
 
@@ -8,7 +11,7 @@ RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w" -o /movistar-proxy ./cmd/server
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -trimpath -ldflags="-s -w" -o /movistar-proxy ./cmd/server
 
 # Etapa 2: Imagen Mínima Final (~20 MB)
 FROM alpine:3.21
