@@ -104,6 +104,7 @@ docker run -d \
 * **Autenticación HTTP Basic (`WEBDAV_USER` / `WEBDAV_PASSWORD`):** A partir de `v2.1.0`, tanto el servidor WebDAV como el panel web validan usuario y contraseña en tiempo constante con protección contra fuerza bruta (rate-limit por IP tras 10 fallos/minuto). Si actualizas un contenedor existente sin estas variables definidas, el servicio arrancará en modo retrocompatible emitiendo un aviso (`[WARNING]`), salvo que actives `REQUIRE_AUTH=true`.
 * **No exponer directamente a Internet:** Si necesitas acceder desde fuera de tu red local, coloca siempre un proxy inverso con **TLS/HTTPS** delante (Caddy, Nginx, Traefik o túnel VPN/WireGuard/Tailscale).
 * **Contenedor sin privilegios (`non-root`):** La imagen oficial ejecuta el servidor bajo el usuario sin privilegios `app` (`UID 10001`). En actualizaciones sobre volúmenes existentes, el entrypoint migra automáticamente los permisos de `/app/tokens` antes de soltar privilegios.
+* **`cap_drop: ALL` / hardening de capabilities:** Para soltar privilegios, el entrypoint necesita `SETUID` y `SETGID` (y `CHOWN`, `DAC_OVERRIDE`, `FOWNER` para migrar permisos). Si las eliminas, el contenedor se ejecutará como **root** y lo indicará en el log. Con `cap_drop: ALL`, usa `user: "10001:10001"` y asegúrate de que la carpeta de tokens del host pertenezca a `10001:10001` (`chown -R 10001:10001 <carpeta>`); o añade `cap_add: [CHOWN, DAC_OVERRIDE, FOWNER, SETUID, SETGID]`.
 
 ### Tabla de Variables de Entorno
 

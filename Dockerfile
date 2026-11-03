@@ -3,6 +3,9 @@ FROM --platform=$BUILDPLATFORM golang:1.26-alpine AS builder
 
 ARG TARGETOS=linux
 ARG TARGETARCH
+# Versión mostrada en logs y panel web (ej. --build-arg VERSION=v2.1.2).
+# Si se omite, se usa la constante config.Version del código fuente.
+ARG VERSION=""
 
 WORKDIR /src
 
@@ -11,7 +14,9 @@ RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -trimpath -ldflags="-s -w" -o /movistar-proxy ./cmd/server
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -trimpath \
+    -ldflags="-s -w -X movistar-webdav-proxy/internal/config.BuildVersion=${VERSION}" \
+    -o /movistar-proxy ./cmd/server
 
 # Etapa 2: Imagen Mínima Final (~20 MB)
 FROM alpine:3.21

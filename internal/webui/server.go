@@ -217,11 +217,11 @@ func (s *Server) handleIndex(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleHealth(w http.ResponseWriter, r *http.Request) {
-	jsonResponse(w, http.StatusOK, map[string]interface{}{"status": "ok", "version": config.Version})
+	jsonResponse(w, http.StatusOK, map[string]interface{}{"status": "ok", "version": config.AppVersion()})
 }
 
 func (s *Server) handleVersion(w http.ResponseWriter, r *http.Request) {
-	jsonResponse(w, http.StatusOK, map[string]interface{}{"version": config.Version})
+	jsonResponse(w, http.StatusOK, map[string]interface{}{"version": config.AppVersion()})
 }
 
 func (s *Server) handleStatus(w http.ResponseWriter, r *http.Request) {

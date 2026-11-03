@@ -17,7 +17,7 @@ import (
 	"movistar-webdav-proxy/internal/webui"
 )
 
-const AppVersion = config.Version
+var AppVersion = config.AppVersion()
 
 func main() {
 	if len(os.Args) > 1 && (os.Args[1] == "-healthcheck" || os.Args[1] == "--healthcheck") {
